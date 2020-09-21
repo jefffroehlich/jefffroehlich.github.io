@@ -3,28 +3,28 @@ var stations = {
 
 	"option1": {
 		id:	"9410230",
-		name: "San Diego",
+		name: "San Diego, CA",
 		lat: "32.7157",
 		lon: "-117.1611",
 		tzAdj: 7
 		},
 	"option2": {
 		id: "8665530",
-		name: "Beaufort",
+		name: "Beaufort, SC",
 		lat: "32.4316",
 		lon: "-80.6698",
 		tzAdj: 4
 		},
 	"option3": {
 		id: "8725110",
-		name: "Bonita Springs",
+		name: "Bonita Springs, FL",
 		lat: "26.3398",
 		lon: "-81.7787",
 		tzAdj: 4
 		},
 	"option4": {
 		id: "8665530",
-		name: "Charleston",
+		name: "Charleston, SC",
 		lat: "32.7765",
 		lon: "-79.9311",
 		tzAdj: 4
@@ -61,7 +61,6 @@ function getTemp(station) {
 	});
 
 	let url = 'https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?date=latest&station='+station+'&product=water_temperature&datum=STND&time_zone=lst&units=english&format=json';
-	console.log(url);
 	$.getJSON(url, function(data) {
 		var parseTemp = data.data[0].v;
 		document.getElementById("temp").innerHTML = parseTemp;
@@ -77,16 +76,12 @@ function getSunset(lat, lon, dropSelection) {
 	var curDate = new Date();
   	var utcOffset = curDate.getTimezoneOffset();
   	utcOffset /= 60;
-  	console.log(dropSelection);
   	var tzOffset = stations[dropSelection].tzAdj;
-  	console.log(tzOffset);
 
 	let url = 'https://api.sunrise-sunset.org/json?lat='+lat+'&lng='+lon+'&date=2020-09-18';
 
 	$.getJSON(url, function(data) {
 		var parseSunset = data.results.sunset;
-		console.log(parseSunset);
-		console.log(utcOffset);
 		var split = parseSunset.split(":");
 		var hour = split[0];
 		hour = hour - utcOffset + utcOffset - tzOffset + 12;
@@ -95,7 +90,6 @@ function getSunset(lat, lon, dropSelection) {
 			hour -= 12;
 		}
 		parseSunset = hour + ":" + split[1] + " PM";
-		console.log(parseSunset);
 
 		document.getElementById("sunset").innerHTML = parseSunset;
 	});
@@ -169,8 +163,8 @@ function parseTides(tomorrow,station) {
 		
 		lArray = lArray.join();
 		hArray = hArray.join();
-		lArray = lArray.replace(/,/g," ");
-		hArray = hArray.replace(/,/g," ");		
+		lArray = lArray.replace(/,/g,", ");
+		hArray = hArray.replace(/,/g,", ");		
 		document.getElementById("lowTide").innerHTML = lArray;
 		document.getElementById("highTide").innerHTML = hArray;
 });
@@ -218,14 +212,18 @@ function getAPI(todayUrl,tomorrowUrl,button) {
 
 function colorChangeToday() {
     
-	document.getElementById('todayBtn').style.backgroundColor = 'lightSlateGray';       
+	document.getElementById('todayBtn').style.backgroundColor = 'gray';       
     document.getElementById('tomorrowBtn').style.backgroundColor = 'white';
+       document.getElementById('todayBtn').style.color = 'white';       
+    document.getElementById('tomorrowBtn').style.color = 'gray';
 }
 
 function colorChangeTomorrow() {
     
 	document.getElementById('todayBtn').style.backgroundColor = 'white';       
-    document.getElementById('tomorrowBtn').style.backgroundColor = 'lightSlateGray';
+    document.getElementById('tomorrowBtn').style.backgroundColor = 'gray';
+    document.getElementById('todayBtn').style.color = 'gray';       
+    document.getElementById('tomorrowBtn').style.color = 'white';
 }
 
 function drawClock(todayArray,tomorrowArray,button) {
@@ -294,36 +292,50 @@ curTime = Date.parse(curTime);
 	return clockPos;
 }
 
-var prevRadians;
+var prevDegrees;
+var deltDegrees;
 function drawTime(ctx, radius, clockPos, button) {
 
 
-    var radians = (clockPos/12*2*Math.PI);
+    var degrees = Math.round(clockPos/12*360);
 	var img = new Image();
 
 	img.addEventListener("load", function() {
 
 	    	if (button === false) {
-	    	ctx.rotate(radians);
+	    	ctx.rotate(degrees * 2*Math.PI/360);
 			ctx.rotate(-2*Math.PI/4); //account for hand img being at 3:00
 			ctx.drawImage(img,-radius,-radius);
-			prevRadians = radians;
+			prevDegrees = degrees;
 			}
 			else {
-			var newRadians = -prevRadians + radians;
-			
-//Interval and increment radians...
-			ctx.rotate(newRadians);
-			ctx.drawImage(img,-radius,-radius);
-			prevRadians = radians;
+				var x = 0;
+				if (degrees > prevDegrees) {
+					deltDegrees = degrees - prevDegrees;
+				}
+				else {
+					deltDegrees = 360 - prevDegrees + degrees;
+				}
+				var rotateVar = setInterval(function(){
+
+					ctx.clearRect(-radius, -radius, canvas.width, canvas.height);
+					ctx.rotate(Math.PI*2/360);
+					ctx.drawImage(img,-radius,-radius);
+					x++;
+					console.log(deltDegrees);
+
+					if(x === deltDegrees) {
+
+						clearInterval(rotateVar);
+						prevDegrees = degrees;
+					}
+
+				}, 5);
 			}
 
 	}, false);
 
-	img.src = 'clockhand.png';
-	
-	
-	
+	img.src = 'clockhand.png';	
 }
 
 function toggleClass(elem,className){
@@ -394,8 +406,6 @@ function newStation(dropSelection) {
 	stationName = stations[dropSelection].name;
 	lat = stations[dropSelection].lat;
 	lon = stations[dropSelection].lon;
-	console.log(lat);
-	console.log(lon);
 	getTemp(station);
 	getSunset(lat, lon, dropSelection);
 	parseTides(0,station);
