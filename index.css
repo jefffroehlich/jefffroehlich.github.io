@@ -1,0 +1,130 @@
+body {
+background: url(bgd.jpg);
+background-repeat: no-repeat;
+background-size: 1800px 1000px;
+font-family: Impact;
+color: white;
+}
+
+.center {
+	font-size: 20px;
+	text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.space { 
+padding: 10px;
+}
+
+#todayBtn {
+background-color: gray;
+color: white;
+font-family: Impact;
+font-size: 16px;
+padding: 5px 10px;
+border-radius: 10px;
+border: 0px;
+cursor: pointer;
+transition: all 0.5s;
+border: none;
+outline: none;
+}
+
+#tomorrowBtn {
+background-color: white;
+color: gray;
+font-family: Impact;
+font-size: 16px;
+padding: 5px 10px;
+border-radius: 10px;
+border: 0px;
+cursor: pointer;
+transition: all 0.5s;
+border: none;
+outline: none;
+}
+
+.textColor {
+color: darkSlateGray;
+}
+
+#canvas {
+
+	background-image: url(canvbkg.png);
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.hide {
+    max-height: 0 !important;
+}
+
+.dropdown{
+	border: 0.1em solid white;
+	width: 10em;
+	margin-bottom: 1em;
+	position: absolute;
+}
+
+.dropdown .title{
+	margin: .3em .3em .3em .3em;	
+	width: 100%;
+}
+
+.dropdown .title .fa-angle-right{
+	float: right;
+	margin-right: .7em;
+	transition: transform .3s;
+}
+
+.dropdown .menu{
+	transition: max-height .5s ease-out;
+	max-height: 20em;
+	overflow: hidden;
+}
+
+.dropdown .menu .option{
+	margin: .3em .3em .3em .3em;
+	margin-top: 0.3em;
+}
+
+.dropdown .menu .option:hover{
+	background: rgba(0,0,0,0.2);
+}
+
+.pointerCursor:hover{
+	cursor: pointer;
+}
+
+.rotate-90{
+	transform: rotate(90deg);
+}
+
+
+.column {
+  float: left;
+  padding: 10px;
+  height: 300px; /* Should be removed. Only for demonstration */
+}
+
+.left, .right {
+  width: 25%;
+}
+
+.middle {
+  width: 50%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
